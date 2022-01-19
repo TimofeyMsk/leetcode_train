@@ -7,34 +7,102 @@ Implement the MedianFinder class:
 MedianFinder() initializes the MedianFinder object.
 void addNum(int num) adds the integer num from the data stream to the data structure.
 double findMedian() returns the median of all elements so far. Answers within 10-5 of the actual answer will be accepted.'''
+from heapq import heappush, heappushpop
 from typing import List
 
 
 class MedianFinder:
     def __init__(self):
-        self.l = []
+        self.lst = []
 
     def addNum(self, num: int) -> None:
-        l = self.l
-        if not num or num >= l[-1]:
-            l.append(num)
-        elif num <= l[0]:
-            l.insert(0, num)
-        else:
-            for i in range(1, len(l)):
-                if l[i - 1] <= num <= l[i]:
-                    l.insert(i, num)
-        print(l)
+        lst = self.lst
+        if not lst or num >= lst[-1]:
+            lst.append(num)
+        elif num <= lst[0]:
+            lst.insert(0, num)
+        else:  # len(l) > 2
+            l, r = 0, len(lst) - 1
+            while r - l > 1:
+                mid = l + (r - l) // 2
+                # print(mid)
+                if lst[mid] == num:
+                    lst.insert(mid, num)
+                    return
+                if num < lst[mid]:
+                    r = mid
+                else:
+                    l = mid
+            lst.insert(r, num)
+
+        # print(lst)
 
     def findMedian(self) -> float:
-        l = self.l
-        k, r = divmod(len(self.l, 2))
+        lst = self.lst
+        print(lst)
+        if not lst:
+            return
+        k, r = divmod(len(lst), 2)
         if r == 1:
-            return l[k]
+            return lst[k]
         else:
-            return (l[k - 1] + l[k]) / 2
+            return (lst[k - 1] + lst[k]) / 2
+
+
+class MedianFinder1:
+
+    def __init__(self):
+        self.small = []
+        self.large = []
+
+    def addNum(self, num: int) -> None:
+        if len(self.small) == len(self.large):
+            heappush(self.large, -heappushpop(self.small, -num))
+        else:
+            heappush(self.small, -heappushpop(self.large, num))
+
+    def findMedian(self) -> float:
+        if len(self.small) == len(self.large):
+            return (self.large[0] - self.small[0]) / 2
+        else:
+            return self.large[0]
+        mid = self.len // 2
+
 
 # Your MedianFinder object will be instantiated and called as such:
-# obj = MedianFinder()
-# obj.addNum(num)
-# param_2 = obj.findMedian()
+obj = MedianFinder1()
+obj.addNum(6)
+print(obj.findMedian())
+obj.addNum(10)
+print(obj.findMedian())
+obj.addNum(2)
+print(obj.findMedian())
+obj.addNum(6)
+print(obj.findMedian())
+obj.addNum(5)
+print(obj.findMedian())
+obj.addNum(0)
+print(obj.findMedian())
+obj.addNum(6)
+print(obj.findMedian())
+obj.addNum(3)  # !!!!!
+print(obj.findMedian())
+obj.addNum(1)
+print(obj.findMedian())
+obj.addNum(0)
+print(obj.findMedian())
+obj.addNum(0)
+print(obj.findMedian())
+
+
+'''["MedianFinder","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian"]
+[[],[6],[],[10],[],[2],
+[],[6],[],[5],[],[0],
+[],[6],[],[3],[],[1],
+[],[0],[],[0],[]]
+
+null,6.00000,null,8.00000,null,6.00000,
+null,6.00000,null,6.00000,null,5.50000,
+null,6.00000,null,!!!5.50000!!!,null,5.00000,
+null,4.00000,null,3.00000]'''
+
