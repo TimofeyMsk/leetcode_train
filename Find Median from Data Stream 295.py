@@ -9,6 +9,7 @@ void addNum(int num) adds the integer num from the data stream to the data struc
 double findMedian() returns the median of all elements so far. Answers within 10-5 of the actual answer will be accepted.'''
 from heapq import heappush, heappushpop
 from typing import List
+from heapq import heappush, heappop, heappushpop # first push, then pop
 
 
 class MedianFinder:
@@ -21,7 +22,7 @@ class MedianFinder:
             lst.append(num)
         elif num <= lst[0]:
             lst.insert(0, num)
-        else:  # len(l) > 2
+        else:  # len(l) >= 2
             l, r = 0, len(lst) - 1
             while r - l > 1:
                 mid = l + (r - l) // 2
@@ -69,29 +70,62 @@ class MedianFinder1:
         mid = self.len // 2
 
 
+class MedianFinder2:
+
+    def __init__(self):
+        self.small = []  # left part (less then median)
+        self.large = []  # right part (bigger then median)
+
+    def addNum(self, num: int) -> None:
+        s, l = self.small, self.large
+        if len(s) == len(l):
+            heappush(l, -heappushpop(s, -num))
+        else:
+            heappush(s, -heappushpop(l, num))
+
+    def findMedian(self) -> float:
+        if len(self.large) == len(self.small) != 0:
+            return (-self.small[0] + self.large[0])/2
+        else:
+            return self.large[0]
+
+
+
+
 # Your MedianFinder object will be instantiated and called as such:
-obj = MedianFinder1()
+obj = MedianFinder2()
 obj.addNum(6)
+print(obj.small, obj.large)
 print(obj.findMedian())
 obj.addNum(10)
+print(obj.small, obj.large)
 print(obj.findMedian())
 obj.addNum(2)
+print(obj.small, obj.large)
 print(obj.findMedian())
 obj.addNum(6)
+print(obj.small, obj.large)
 print(obj.findMedian())
 obj.addNum(5)
+print(obj.small, obj.large)
 print(obj.findMedian())
 obj.addNum(0)
+print(obj.small, obj.large)
 print(obj.findMedian())
 obj.addNum(6)
+print(obj.small, obj.large)
 print(obj.findMedian())
 obj.addNum(3)  # !!!!!
+print(obj.small, obj.large)
 print(obj.findMedian())
 obj.addNum(1)
+print(obj.small, obj.large)
 print(obj.findMedian())
 obj.addNum(0)
+print(obj.small, obj.large)
 print(obj.findMedian())
 obj.addNum(0)
+print(obj.small, obj.large)
 print(obj.findMedian())
 
 
