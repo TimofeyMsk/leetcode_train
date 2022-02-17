@@ -1,22 +1,20 @@
-from typing import List
 
 
 class Solution:
     def isValid(self, s: str) -> bool:
-        lst = [*s]
-        pars = {'(': ')', '[': ']', '{': '}'}
-
-        def dive(l: List[str], level: int) -> str:
-            current = l[0]
-            next = l[1]
-            if current in pars.keys():
-                if next == pars[current]:  # correct closing
-                    l.pop(0)
-                    l.pop(0)
-
-
-
-
+        opened = '([{'
+        closed = ')]}'
+        stack = []
+        for x in s:
+            if x in opened:
+                stack.append(closed[opened.index(x)])
+            elif x in closed and stack:
+                if x != stack.pop():
+                    return False
+            else:
+                return False
+        return not stack
 
 
-print(Solution.isValid(None, '([][{}])'))
+
+print(Solution.isValid(None, '([][{}]))'))
